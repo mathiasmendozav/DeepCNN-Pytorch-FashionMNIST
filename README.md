@@ -68,7 +68,7 @@ The `evaluate.py` script provides:
 
 1. **Clone this repository**:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/mathiasmendozav/DeepCNN-Pytorch-FashionMNIST
    cd fashion-mnist-cnn
    ```
 
