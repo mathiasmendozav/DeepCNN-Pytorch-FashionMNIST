@@ -69,7 +69,7 @@ The `evaluate.py` script provides:
 1. **Clone this repository**:
    ```bash
    git clone https://github.com/mathiasmendozav/DeepCNN-Pytorch-FashionMNIST
-   cd fashion-mnist-cnn
+   cd DeepCNN-Pytorch-FashionMNIST
    ```
 
 2. **Install dependencies**:
