@@ -103,4 +103,3 @@ Contributions are welcome. Please fork the repository, create a feature branch, 
 ## License
 
 This project is licensed under the MIT License.
-```
