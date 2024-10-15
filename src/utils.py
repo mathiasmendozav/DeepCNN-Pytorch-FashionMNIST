@@ -23,4 +23,3 @@ def make_predictions(model: nn.Module, data: list, device: torch.device):
     
     # returning stacked list
     return torch.stack(pred_probs)
-
