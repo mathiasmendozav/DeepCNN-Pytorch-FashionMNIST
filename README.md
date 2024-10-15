@@ -30,17 +30,30 @@ The CNN model defined in `model.py` employs the following structure:
 
 - **Input Layer**: Takes in a 1x28x28 image (grayscale).
 - **Convolutional Layers**:
-  - Two convolutional layers with ReLU activation:
-    - First Conv2D: 32 filters, kernel size 3x3, padding 1
-    - Second Conv2D: 64 filters, kernel size 3x3, padding 1
-  - Each followed by:
-    - Max Pooling: kernel size 2, stride 2
-    - Dropout: for regularization, with p=0.25
+  - Two convolutional blocks:
+    - **First Block**:
+      - Conv2D: 64 filters, kernel size 3x3, padding 1
+      - ReLU activation
+      - Batch Normalization
+      - Conv2D: 64 filters, kernel size 3x3, padding 1
+      - ReLU activation
+      - Batch Normalization
+      - Max Pooling: kernel size 2, stride 2
+      - Dropout: p=0.25 for regularization
+    - **Second Block**:
+      - Conv2D: 128 filters, kernel size 3x3, padding 1
+      - ReLU activation
+      - Batch Normalization
+      - Conv2D: 128 filters, kernel size 3x3, padding 1
+      - ReLU activation
+      - Batch Normalization
+      - Max Pooling: kernel size 2, stride 2
+      - Dropout: p=0.25 for regularization
 - **Fully Connected Layers**:
   - Flatten layer
-  - Dense layer with 128 units and ReLU activation
+  - Dense layer with 256 units, ReLU activation, followed by Batch Normalization
   - Dropout with p=0.5
-  - Output layer with 10 units (one for each class), using softmax activation for classification.
+  - Output layer with 10 units (one for each class in FashionMNIST), no explicit softmax as CrossEntropyLoss in PyTorch includes it.
 
 ## Training
 
