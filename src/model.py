@@ -5,6 +5,29 @@ import torch
 import torch.nn as nn
 
 class CNNModel(nn.Module):
+    """
+    Convolutional Neural Network designed for image classification tasks like FashionMNIST.
+
+    Architecture Overview:
+    - Two convolutional blocks, each with:
+      - Two layers of convolution followed by ReLU activation and batch normalization
+      - Max pooling to reduce spatial dimensions
+      - Dropout for regularization
+    - A sequence of fully connected layers to map the flattened features to class probabilities
+
+    Attributes:
+    - block1 (nn.Sequential): First block of convolutional layers with pooling and dropout
+    - block2 (nn.Sequential): Second block, similar to block1 but with increased depth
+    - fully_connected_layer (nn.Sequential): Final layers for classification
+
+    Args:
+    - input_channels (int): Number of channels in the input image (default is 1 for grayscale)
+    - output_shape (int): Number of output classes (default is 10 for FashionMNIST)
+
+    Forward Pass:
+    - Applies convolutions, pooling, and dropout, then flattens the output for the fully connected layers
+    - Returns logits for each class
+    """
     def __init__(self, input_channels: int = 1, output_shape: int = 10):
         super(CNNModel, self).__init__()
         
