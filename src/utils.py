@@ -3,6 +3,8 @@
 ###########################################
 import torch
 import torch.nn as nn
+from torchvision.datasets import FashionMNIST
+from torchvision.transforms import ToTensor
 
 def make_predictions(model: nn.Module, data: list, device: torch.device):
     # prediction probabilities list
@@ -23,3 +25,15 @@ def make_predictions(model: nn.Module, data: list, device: torch.device):
     
     # returning stacked list
     return torch.stack(pred_probs)
+
+def get_evaluation_data():
+    # Define transformations for the dataset
+    transform = ToTensor()
+    # Downloading/loading test data
+    test_data = FashionMNIST(
+        root='./data',
+        train=False,
+        download=True,
+        transform=transform
+    )
+    return test_data
