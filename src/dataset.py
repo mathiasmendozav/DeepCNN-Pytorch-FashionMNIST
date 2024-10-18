@@ -39,16 +39,8 @@ def get_data_loaders(batch_size: int = 64):
                                   batch_size=batch_size,
                                   shuffle=True)
 
-    # Note: There was an error here where train_data was used instead of test_data
     test_dataloader = DataLoader(test_data,
                                  batch_size=batch_size,
                                  shuffle=False)
 
     return train_dataloader, test_dataloader
-
-# Example usage in the same script or import this function elsewhere
-if __name__ == "__main__":
-    train_dataloader, test_dataloader = get_data_loaders()
-    # data exploration
-    print(f'Length of train_dataloader: {train_dataloader}\nLength of test_dataloader: {test_dataloader}')
-    print(f'Sample Image shape: {train_dataloader[0].shape}')
