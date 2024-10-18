@@ -5,6 +5,7 @@ import torch
 import torch.nn as nn
 from torchvision.datasets import FashionMNIST
 from torchvision.transforms import ToTensor
+from torch.utils.data import DataLoader
 
 def make_predictions(model: nn.Module, data: list, device: torch.device):
     # prediction probabilities list
@@ -36,4 +37,9 @@ def get_evaluation_data():
         download=True,
         transform=transform
     )
-    return test_data
+    
+    # getting dataloader
+    test_dataloader = DataLoader(test_data,
+                                 batch_size=64,
+                                 shuffle=False)
+    return test_dataloader
