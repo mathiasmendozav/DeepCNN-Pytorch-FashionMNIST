@@ -1,12 +1,17 @@
 #################
 # Training Model
 #################
+import os
 import torch
 import torch.nn as nn
 from model import CNNModel
 from tqdm import tqdm
 from dataset import get_data_loaders
 from torchmetrics import Accuracy
+
+# Ensure the directory for saving model weights exists
+SAVE_DIR = os.path.join(os.getcwd(), "saved_models")
+os.makedirs(SAVE_DIR, exist_ok=True)  # Create 'saved_models' folder if it doesn't exist
 
 # train function
 def training_loop(model: nn.Module, dataloader: list, loss_fn: nn.Module, optimizer: torch.optim, device: torch.device):
@@ -85,3 +90,8 @@ if __name__ == '__main__':
         test_loss, eval_acc = testing_loop(model, test_dataloader, loss_fn, acc_fn, device)
 
         print(f'Epoch: {epoch+1}/{epochs} | Train Loss: {train_loss:.2f} | Test Loss: {test_loss:.2f} | Eval Acc: {eval_acc*100:.2f}%')
+
+        # Save the model weights at the end of each epoch (1.8 Million parameter model for now)
+        model_save_path = os.path.join(SAVE_DIR, f"CNNModel-1.8M.pth")
+        torch.save(model.state_dict(), model_save_path)
+        print(f"Model saved to {model_save_path}")
