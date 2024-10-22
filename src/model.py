@@ -1,12 +1,12 @@
 #####################################
-# Convolutional Neural Network Model
+# Convolutional Neural Network Models
 #####################################
 import torch
 import torch.nn as nn
 
-class CNNModel(nn.Module):
+class CNNModel2M(nn.Module):
     """
-    Convolutional Neural Network designed for image classification tasks like FashionMNIST.
+    Convolutional Neural Network (2 Million parameter model) designed for image classification tasks like FashionMNIST.
 
     Architecture Overview:
     - Two convolutional blocks, each with:
@@ -29,7 +29,7 @@ class CNNModel(nn.Module):
     - Returns logits for each class
     """
     def __init__(self, input_channels: int = 1, output_shape: int = 10):
-        super(CNNModel, self).__init__()
+        super(CNNModel2M, self).__init__()
         
         # First convolutional block
         self.block1 = nn.Sequential(
