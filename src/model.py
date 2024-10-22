@@ -70,59 +70,112 @@ class CNNModel2M(nn.Module):
         x = self.block2(x)
         x = self.fully_connected_layer(x)
         return x
-    
-# 6 Million Parameter Model (6.6 Million to be precise)
-class ComplexCNNModel(nn.Module):
-    def __init__(self, input_channels: int = 1, output_shape: int = 10):
-        super(ComplexCNNModel, self).__init__()
-        
-        # Initial convolution layer
-        self.initial_conv = nn.Conv2d(input_channels, 32, kernel_size=3, padding=1)
-        
-        # Define res_block as a class method
-        def res_block(in_channels, out_channels, stride=1):
-            return nn.Sequential(
-                nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=stride, padding=1, bias=False),
-                nn.BatchNorm2d(out_channels),
-                nn.ReLU(inplace=True),
-                nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1, bias=False),
-                nn.BatchNorm2d(out_channels),
-                nn.Conv2d(in_channels, out_channels, kernel_size=1, stride=stride, bias=False) if in_channels != out_channels or stride != 1 else nn.Identity(),
-            )
-        
-        # creating layer blocks
-        self.layer1 = self._make_layer(32, 64, 2, stride=1, block=res_block)
-        self.layer2 = self._make_layer(64, 128, 3, stride=2, block=res_block)
-        self.layer3 = self._make_layer(128, 256, 3, stride=2, block=res_block)
-        self.layer4 = self._make_layer(256, 512, 2, stride=2, block=res_block)
 
-        # adaptive pooling and final classifier and fully connected layer
+
+# 6 Million Parameter Model (6.6 Million to be precise)
+class CNNModel6M(nn.Module):
+    """
+    Convolutional Neural Network (6 Million parameter model) designed for image classification tasks like FashionMNIST.
+
+    Architecture Overview:
+    - Four convolutional blocks with increasing depth, each featuring:
+      - Multiple layers of convolution followed by ReLU activation and batch normalization
+      - Max pooling to reduce spatial dimensions
+      - Dropout for regularization
+    - A deep sequence of fully connected layers to map the high-dimensional feature space to class probabilities
+
+    Attributes:
+    - block1, block2, block3, block4 (nn.Sequential): Convolutional blocks with increasing channel depth
+    - classifier (nn.Sequential): A deep fully connected network for final classification
+
+    Args:
+    - input_channels (int): Number of channels in the input image (default is 1 for grayscale)
+    - output_shape (int): Number of output classes (default is 10 for FashionMNIST)
+
+    Forward Pass:
+    - Processes inputs through all convolutional blocks, applies global average pooling, 
+      then uses fully connected layers to produce class logits
+    """
+    def __init__(self, input_channels: int = 1, output_shape: int = 10):
+        super(CNNModel6M, self).__init__()
+        
+        # First convolutional block - 64 channels
+        self.block1 = nn.Sequential(
+            nn.Conv2d(input_channels, 64, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.BatchNorm2d(64),
+            nn.Conv2d(64, 64, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.BatchNorm2d(64),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Dropout(0.3)
+        )
+        
+        # Second block - 128 channels
+        self.block2 = nn.Sequential(
+            nn.Conv2d(64, 128, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.BatchNorm2d(128),
+            nn.Conv2d(128, 128, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.BatchNorm2d(128),
+            nn.Conv2d(128, 128, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.BatchNorm2d(128),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Dropout(0.3)
+        )
+        
+        # Third block - 256 channels
+        self.block3 = nn.Sequential(
+            nn.Conv2d(128, 256, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.BatchNorm2d(256),
+            nn.Conv2d(256, 256, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.BatchNorm2d(256),
+            nn.Conv2d(256, 256, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.BatchNorm2d(256),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Dropout(0.3)
+        )
+        
+        # Fourth block - 512 channels
+        self.block4 = nn.Sequential(
+            nn.Conv2d(256, 512, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.BatchNorm2d(512),
+            nn.Conv2d(512, 512, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.BatchNorm2d(512),
+            nn.Conv2d(512, 512, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.BatchNorm2d(512),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Dropout(0.3)
+        )
+
+        # Global Average Pooling and classifier
         self.global_pool = nn.AdaptiveAvgPool2d((1, 1))
         self.classifier = nn.Sequential(
             nn.Flatten(),
             nn.Linear(512, 1024),
             nn.ReLU(inplace=True),
             nn.Dropout(0.5),
-            nn.Linear(1024, 512),
+            nn.Linear(1024, 1024),
             nn.ReLU(inplace=True),
             nn.Dropout(0.5),
+            nn.Linear(1024, 512),
+            nn.ReLU(inplace=True),
             nn.Linear(512, output_shape)
         )
 
-    def _make_layer(self, in_channels, out_channels, blocks, stride=1, block=None):
-        layers = []
-        layers.append(block(in_channels, out_channels, stride))
-        for _ in range(1, blocks):
-            layers.append(block(out_channels, out_channels))
-        return nn.Sequential(*layers)
-
-    def forward(self, x):
-        x = self.initial_conv(x)
-        x = F.relu(x)
-        x = self.layer1(x)
-        x = self.layer2(x)
-        x = self.layer3(x)
-        x = self.layer4(x)
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = self.block1(x)
+        x = self.block2(x)
+        x = self.block3(x)
+        x = self.block4(x)
         x = self.global_pool(x)
         x = self.classifier(x)
         return x
