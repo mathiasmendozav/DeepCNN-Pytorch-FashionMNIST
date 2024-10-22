@@ -3,7 +3,7 @@
 #################
 import torch
 import torch.nn as nn
-from model import CNNModel
+from model import CNNModel2M
 from utils import get_evaluation_data
 import random
 from tqdm import tqdm
@@ -15,9 +15,9 @@ current_directory = os.getcwd()
 # Get current device
 device = "cuda" if torch.cuda.is_available() else "cpu"
 # Construct the path to the saved model using the current directory
-model_path = os.path.join(current_directory, 'saved_models', 'CNNModel-1.8M.pth')
+model_path = os.path.join(current_directory, 'saved_models', 'CNNModel-2M.pth')
 # Initialize model
-model = CNNModel(input_channels=1, output_shape=10)
+model = CNNModel2M(input_channels=1, output_shape=10)
 model.to(device)
 
 # Check if the model file exists
