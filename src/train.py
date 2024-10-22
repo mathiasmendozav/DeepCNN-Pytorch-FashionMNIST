@@ -92,6 +92,6 @@ if __name__ == '__main__':
         print(f'Epoch: {epoch+1}/{epochs} | Train Loss: {train_loss:.2f} | Test Loss: {test_loss:.2f} | Eval Acc: {eval_acc*100:.2f}%')
 
         # Save the model weights at the end of each epoch
-        model_save_path = os.path.join(SAVE_DIR, f"CNNModel6M.pth")
+        model_save_path = os.path.join(SAVE_DIR, f"CNNModel-6M.pth")
         torch.save(model.state_dict(), model_save_path)
         print(f"Model saved to {model_save_path}")
