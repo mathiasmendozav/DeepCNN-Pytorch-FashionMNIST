@@ -4,7 +4,7 @@
 import os
 import torch
 import torch.nn as nn
-from model import CNNModel
+from model import CNNModel6M
 from tqdm import tqdm
 from dataset import get_data_loaders
 from torchmetrics import Accuracy
@@ -72,12 +72,12 @@ if __name__ == '__main__':
     print(f'Working on: {torch.cuda.get_device_name(torch.cuda.current_device())}')
     
     # create new instance of model or load saved model weights
-    model = CNNModel(input_channels=1, output_shape=10)
+    model = CNNModel6M(input_channels=1, output_shape=10)
     model.to(device)
     
     # loss function and optimizer
     loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
     # define accuracy function (using torchmetrics in this case)
     acc_fn = Accuracy(task='multiclass', num_classes=10).to(device)
     
@@ -91,7 +91,7 @@ if __name__ == '__main__':
 
         print(f'Epoch: {epoch+1}/{epochs} | Train Loss: {train_loss:.2f} | Test Loss: {test_loss:.2f} | Eval Acc: {eval_acc*100:.2f}%')
 
-        # Save the model weights at the end of each epoch (1.8 Million parameter model for now)
-        model_save_path = os.path.join(SAVE_DIR, f"CNNModel-1.8M.pth")
+        # Save the model weights at the end of each epoch
+        model_save_path = os.path.join(SAVE_DIR, f"CNNModel6M.pth")
         torch.save(model.state_dict(), model_save_path)
         print(f"Model saved to {model_save_path}")
